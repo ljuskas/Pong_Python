@@ -12,9 +12,9 @@ def start_the_game():
 
 pong_game = PongGame(800, 600)
 
-menu = pygame_menu.Menu('Welcome', pong_game.WIDTH, pong_game.HEIGHT, theme=pygame_menu.themes.THEME_DARK)
-menu.add.button('Play', start_the_game)
-menu.add.button('Quit', pygame_menu.events.EXIT)
+menu = pygame_menu.Menu('Bienvenido', pong_game.WIDTH, pong_game.HEIGHT, theme=pygame_menu.themes.THEME_DARK)
+menu.add.button('Jugar', start_the_game)
+menu.add.button('Salir', pygame_menu.events.EXIT)
 
 play = True
 

@@ -5,7 +5,7 @@ class PongGame:
         self.WIDTH = width
         self.HEIGHT = height
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption('Pong with Menu')
+        pygame.display.set_caption('PONG PY')
         self.clock = pygame.time.Clock()
         self.FPS = 60
         
@@ -15,6 +15,8 @@ class PongGame:
         self.winner_score = 10
         self.left_score = 0
         self.right_score = 0
+        self.score_checker= 1
+        self.speed_incremen = 0.1
         self.font = pygame.font.SysFont(None, 36)
         
         self.PADDLE_WIDTH, self.PADDLE_HEIGHT = 10, 100
@@ -56,18 +58,37 @@ class PongGame:
 
         if self.ball.left <= 0:
             self.right_score += 1
+            self.score_checker += 1
             self.reset_ball()
         elif self.ball.right >= self.WIDTH:
             self.left_score += 1
+            self.score_checker += 1
             self.reset_ball()
 
         if self.ball.colliderect(self.left_paddle) or self.ball.colliderect(self.right_paddle):
             self.ball_speed_x = -self.ball_speed_x
+        
+        self.check_score()
+            
+    def check_score(self):
+        if self.score_checker % 2 == 0:
+            self.score_checker = 1
+            print(f"Incrementamos velocidad de la pelota. Velocidad actual: X={self.ball_speed_x}, Y={self.ball_speed_y}")
+            self.ball_speed_x = self._increase_speed(self.ball_speed_x)
+            self.ball_speed_y = self._increase_speed(self.ball_speed_y)
+            
 
+    def _increase_speed(self, speed):
+        if speed > 0:
+            return speed + self.speed_incremen
+        else:
+            return speed - self.speed_incremen
+        
     def reset_ball(self):
         self.ball.center = (self.WIDTH // 2, self.HEIGHT // 2)
         self.ball_speed_x *= -1
         self.ball_speed_y *= -1
+        
 
     def reset_game(self):
         self.left_score = 0
