@@ -37,17 +37,37 @@ class PongGame:
         
         self.estados_juego = ['PLAY', 'PAUSED', 'GAME_OVER', 'MENU']
         self.estado = 'MENU'
+        self.players = 1
+        self.auto_paddle_speed = 6.5
         self.winner = None
 
-    def move_paddles(self, keys):
-        if keys[pygame.K_w] and self.left_paddle.top > 0:
-            self.left_paddle.y -= self.paddle_speed
-        if keys[pygame.K_s] and self.left_paddle.bottom < self.HEIGHT:
-            self.left_paddle.y += self.paddle_speed
+    def move_paddles_2p(self, keys):
+        if(self.players == 2):
+            if keys[pygame.K_w] and self.left_paddle.top > 0:
+                self.left_paddle.y -= self.paddle_speed
+            if keys[pygame.K_s] and self.left_paddle.bottom < self.HEIGHT:
+                self.left_paddle.y += self.paddle_speed
+            if keys[pygame.K_UP] and self.right_paddle.top > 0:
+                self.right_paddle.y -= self.paddle_speed
+            if keys[pygame.K_DOWN] and self.right_paddle.bottom < self.HEIGHT:
+                self.right_paddle.y += self.paddle_speed
+        elif(self.players == 1):
+            self.move_paddles_1p(keys)
+
+    def move_paddles_1p(self, keys):
         if keys[pygame.K_UP] and self.right_paddle.top > 0:
             self.right_paddle.y -= self.paddle_speed
         if keys[pygame.K_DOWN] and self.right_paddle.bottom < self.HEIGHT:
             self.right_paddle.y += self.paddle_speed
+        #PALETA AUTOMÁTICA
+        if self.ball.centery < self.left_paddle.centery:
+            # Mueve la paleta hacia arriba si la pelota está por encima
+            self.left_paddle.y -= self.auto_paddle_speed
+        elif self.ball.centery > self.left_paddle.centery:
+            # Mueve la paleta hacia abajo si la pelota está por debajo
+            self.left_paddle.y += self.auto_paddle_speed
+        self.left_paddle.y = max(self.left_paddle.y, 0)  # No subir más allá del borde superior
+        self.left_paddle.y = min(self.left_paddle.y, self.HEIGHT - self.left_paddle.height)  # No bajar más allá del borde inferior
 
     def move_ball(self):
         self.ball.x += self.ball_speed_x
@@ -88,7 +108,6 @@ class PongGame:
         self.ball.center = (self.WIDTH // 2, self.HEIGHT // 2)
         self.ball_speed_x *= -1
         self.ball_speed_y *= -1
-        
 
     def reset_game(self):
         self.left_score = 0
@@ -128,7 +147,7 @@ class PongGame:
 
     def update(self):
         keys = pygame.key.get_pressed()
-        self.move_paddles(keys)
+        self.move_paddles_2p(keys)
         self.move_ball()
         self.draw_game()
         self.check_winner()
